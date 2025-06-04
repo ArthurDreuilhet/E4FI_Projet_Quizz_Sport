@@ -3,5 +3,3 @@
 ## Sports
 
 # **CACA**
-
-WORKSPACE = CACA PROUT
