@@ -1,12 +1,17 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { ref } from 'vue'
+
+const count = ref(0)
+
+const inc = () => {
+  count.value += 1
+}
 </script>
 
 <template>
   <header>
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -15,6 +20,8 @@ import { RouterLink, RouterView } from 'vue-router'
   </header>
 
   <RouterView />
+  Je sais compter jusqu'à {{ count }} !
+  <button @click="inc">Plus</button>
 </template>
 
 <style scoped>
