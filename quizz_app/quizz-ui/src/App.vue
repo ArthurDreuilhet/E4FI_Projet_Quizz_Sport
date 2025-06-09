@@ -14,14 +14,12 @@ const inc = () => {
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/quizz">Quizz</RouterLink>
       </nav>
     </div>
   </header>
 
   <RouterView />
-  Je sais compter jusqu'à {{ count }} !
-  <button @click="inc">Plus</button>
 </template>
 
 <style scoped>

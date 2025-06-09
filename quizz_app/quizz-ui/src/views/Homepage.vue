@@ -17,7 +17,6 @@ onMounted(async () => {
 
 <template>
   <h1>Home page</h1>
-  <router-link to="/new-quiz">Démarrer le quiz !</router-link>
   <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
     {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
   </div>
