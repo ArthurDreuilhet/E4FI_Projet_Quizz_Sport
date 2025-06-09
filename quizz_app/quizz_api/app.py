@@ -29,6 +29,8 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
+    score = []
+    
     connection = DBConnection()
     if connection is None:
         return {"status": "error", "message": "Failed to connect to database"}, 500
@@ -37,7 +39,24 @@ def GetQuizInfo():
     cursor.execute("SELECT COUNT(*) FROM questions")
     count = cursor.fetchone()[0]
     
-    return {"size": count, "scores": []}, 200
+    cursor.execute("SELECT * FROM joueur")
+    count_participants = cursor.fetchall()
+        
+    for participant in count_participants:
+        print(f"[DEBUG] Participant: {participant[1]}, Score: {participant[2]}")
+        score.append({
+            "playerName": participant[1],
+            "score": participant[2]
+        })
+    
+    print(f"[DEBUG] Total number of questions: {score}")
+    
+    score = sorted(score, key=lambda x: x['score'], reverse=True)
+    
+    connection.commit()
+    connection.close()
+    
+    return {"size": count, "scores": score}, 200
 
 @app.route('/login', methods=['POST'])
 def Login():
@@ -400,12 +419,46 @@ def Post_participant():
                 "UPDATE joueur SET score = score + 1 WHERE nom=?",
                 (playload['playerName'],)
             )
+            
+    cursor.execute(
+        "SELECT * FROM joueur WHERE nom=?",
+        (playload['playerName'],)
+    )
+    participant = cursor.fetchone()
+    if not participant:
+        return {"status": "error", "message": "Participant not found"}, 404        
         
     connection.commit()
     connection.close()
-    return {"status": "success", "message": "Participant added successfully"}, 200
+    return {"status": "success", "message": "Participant added successfully", "playerName":participant[1], "score":participant[2]}, 200
 
-#@app.route('/participations', methods=['DELETE'])
+@app.route('/participations/all', methods=['DELETE'])
+def Delete_participant():
+    auth_header = request.headers.get('Authorization')
+    
+    if not auth_header:
+        return {"status": "error", "message": "Authorization header is missing"}, 401
+    
+    token = auth_header.split(" ")[1]
+    try:
+        user = jwt_utils.decode_token(token)
+        print(f"[DEBUG] Authenticated user: {user}")
+    except jwt_utils.JwtError as e:
+        return {"status": "error", "message": str(e)}, 401    
+    
+    connection = DBConnection()
+    if connection is None:
+        return {"status": "error", "message": "Failed to connect to database"}, 500
+    
+    cursor = connection.cursor()
+    
+    cursor.execute("DELETE FROM joueur")
+    cursor.execute("DELETE FROM sqlite_sequence WHERE name='joueur'")
+    
+    connection.commit()
+    connection.close()
+    
+    return {"status": "success", "message": "All participants deleted successfully"}, 204
     
 
 if __name__ == "__main__":
