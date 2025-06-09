@@ -348,7 +348,65 @@ def Delete_Question_by_id(question_id):
 #    
 ############################################################################ 
 
+@app.route('/participations', methods=['POST'])
+def Post_participant():
+    
+    playload = request.get_json()
+    
+    connection = DBConnection()
+    if connection is None:
+        return {"status": "error", "message": "Failed to connect to database"}, 500
+    
+    cursor = connection.cursor()
+    
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    count = cursor.fetchone()[0]
+    
+    if count != len(playload['answers']):
+        return {"status": "error", "message": "Number of answers does not match the number of questions"}, 400
+    
+    cursor.execute(
+        "INSERT INTO joueur (nom, score) VALUES (?, ?)",
+        (playload['playerName'], 0)
+    )
+    
+    for answer_postion in range(len(playload['answers'])):
+        print(f"[DEBUG] Processing answer at position {answer_postion} : {playload['answers'][answer_postion]}")
+        cursor.execute(
+            "SELECT * FROM questions WHERE position=?",
+            (answer_postion + 1,)
+        )
+        
+        question = cursor.fetchone()
+        
+        print(f"[DEBUG] Fetching question with position {answer_postion + 1} : {question[1]}")
+        
+        if not question:
+            return {"status": "error", "message": f"Question at position {playload['answers'][answer_postion] + 1} not found"}, 404
+        
+        cursor.execute(
+            "SELECT * FROM reponses WHERE id_question=?",
+            (question[0],)
+        )
+        
+        reponses = cursor.fetchall()
+        print(f"[DEBUG] Fetching responses for question ID {question[0]}: {reponses}")
+        
+        if not reponses:
+            return {"status": "error", "message": f"No responses found for question at position {playload['answers'][answer_postion] + 1}"}, 404
+        
+        if (reponses[playload['answers'][answer_postion] - 1][3] == 1):
+            cursor.execute(
+                "UPDATE joueur SET score = score + 1 WHERE nom=?",
+                (playload['playerName'],)
+            )j
+        
+    connection.commit()
+    connection.close()
+    return {"status": "success", "message": "Participant added successfully"}, 200
 
+@app.route('/participations', methods=['DELETE'])
+    
 
 if __name__ == "__main__":
     app.run()
