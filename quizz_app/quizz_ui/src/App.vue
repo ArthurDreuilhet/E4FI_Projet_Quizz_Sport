@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { ref } from 'vue'
 
+
 const count = ref(0)
 
 const inc = () => {
@@ -14,7 +15,7 @@ const inc = () => {
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/quizz">Quizz</RouterLink>
+        <RouterLink to="/start">Start</RouterLink>
       </nav>
     </div>
   </header>
