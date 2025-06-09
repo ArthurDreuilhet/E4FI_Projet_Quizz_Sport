@@ -399,13 +399,13 @@ def Post_participant():
             cursor.execute(
                 "UPDATE joueur SET score = score + 1 WHERE nom=?",
                 (playload['playerName'],)
-            )j
+            )
         
     connection.commit()
     connection.close()
     return {"status": "success", "message": "Participant added successfully"}, 200
 
-@app.route('/participations', methods=['DELETE'])
+#@app.route('/participations', methods=['DELETE'])
     
 
 if __name__ == "__main__":
