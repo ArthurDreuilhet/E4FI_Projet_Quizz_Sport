@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Participation_storage_service from './Participation_storage_service'
 
 const instance = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
@@ -27,7 +28,6 @@ export default {
         console.error(error)
       })
   },
-
   async getInfos() {
     try {
       const response = await fetch('http://localhost:5000/quiz-info')
@@ -40,6 +40,29 @@ export default {
     catch (error) {
       console.error('There has been a problem with your fetch operation:', error)
       return null
+    }
+  },
+  async get_login(password) {
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + Participation_storage_service.get_Token(),
+        },
+        body: JSON.stringify({ "password": password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      return data;
+
+    } catch (error) {
+      console.error('There has been a problem with your fetch operation:', error);
+      return null;
     }
   },
   async get_Question (id) {

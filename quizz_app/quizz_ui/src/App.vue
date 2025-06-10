@@ -17,10 +17,11 @@ const inc = () => {
         <nav class="flex items-center justify-between">
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/start">Start</RouterLink>
+          <RouterLink to="/admin">Admin</RouterLink>
         </nav>
       </div>
     </header>
-    <div style="height: 90vh; width: 100%; padding: 0px; background-color: var(--color-bg);">
+    <div style="height: 90vh; width: 100%; padding: 0px; background-color: var(--color-bg); display: flex; flex-direction: column; align-items: center; ">
       <RouterView />
     </div>
     
@@ -51,7 +52,7 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: var(--color-border);
 }
 
 nav a.router-link-exact-active:hover {
@@ -61,7 +62,7 @@ nav a.router-link-exact-active:hover {
 nav a {
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-text);
 }
 
 nav a:first-of-type {

@@ -61,10 +61,23 @@ def GetQuizInfo():
 @app.route('/login', methods=['POST'])
 def Login():
     payload = request.get_json()
+    
+    auth_header = request.headers.get('Authorization')
+    
+    print(f"[DEBUG] Received Authorization header: {auth_header}")
+
+    token = auth_header.split(" ")[1]
 
     if hashlib.md5(payload['password'].encode('utf-8')).digest() == b'^\x92\xc9\xe1!\x18U\xd2tc\xfa\xc5c\xbepe':
         jwt_token = jwt_utils.build_token()
         return {"status": "success", "message": "Login successful", "token": jwt_token}, 200
+    elif auth_header :
+        try:
+            user = jwt_utils.decode_token(token)
+            print(f"[DEBUG] Authenticated user: {user}")
+            return {"status": "success", "message": "Login successful", "token": token}, 200
+        except jwt_utils.JwtError as e:
+            return {"status": "error", "message": "Invalid credentials"}, 401
     else:
         return {"status": "error", "message": "Invalid credentials"}, 401
     
