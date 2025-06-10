@@ -6,7 +6,7 @@ const registeredScores = ref([])
 
 onMounted(async () => {
   console.log('Home page mounted')
-  const response = await quizApiService.getQuizInfo()
+  const response = await quizApiService.getInfos()
   if (response && response.status === 200) {
     registeredScores.value = response.data
   } else {

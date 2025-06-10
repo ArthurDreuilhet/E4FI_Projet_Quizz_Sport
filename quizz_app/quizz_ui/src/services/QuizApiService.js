@@ -27,8 +27,33 @@ export default {
         console.error(error)
       })
   },
-  getQuizInfo() {
-    return this.call('get', 'quiz-info')
+
+  async getInfos() {
+    try {
+      const response = await fetch('http://localhost:5000/quiz-info')
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      const data = await response.json()
+      return data
+    }
+    catch (error) {
+      console.error('There has been a problem with your fetch operation:', error)
+      return null
+    }
+  },
+  async get_Question (id) {
+    try {
+      const response = await fetch(`http://localhost:5000/questions/${id}`);
+      const question = await response.json();
+
+      console.log('Fetched question:', question);
+
+      return question;
+
+    } catch (error) {
+      console.error('Error fetching question:', error);
+    }
   },
   getQuestion(position) {
     // not implemented

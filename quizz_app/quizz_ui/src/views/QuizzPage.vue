@@ -26,14 +26,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="quizz">
+  <div class="hundred">
     <h1 class="text-3xl font-bold underline">This is the quizz page</h1>
     <p class="text-lg">saisissez votre nom : </p>
     <div class="flex flex-col items-start justify-center gap-4">
       <InputText type="text" v-model="playerName" placeholder="Votre nom" />
       <Button label="GO" variant="outlined" type="submit" severity="secondary" @click="launchNewQuizz"></Button>
       <p class="text-lg">Bienvenue {{ playerName }} !</p>
-      <router-link to="/new-quiz">Démarrer le quiz !</router-link>
     </div>
   </div>
 

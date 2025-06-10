@@ -11,22 +11,31 @@ const inc = () => {
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/start">Start</RouterLink>
-      </nav>
+  <div class="px-8" style="height: 100%; width: 100vw;">
+    <header  style="width: 100%; height: 10vh; padding-right: 0px; background-color: var(--color-bg);">
+      <div class="wrapper">
+        <nav class="flex items-center justify-between">
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/start">Start</RouterLink>
+        </nav>
+      </div>
+    </header>
+    <div style="height: 90vh; width: 100%; padding: 0px; background-color: var(--color-bg);">
+      <RouterView />
     </div>
-  </header>
-
-  <RouterView />
+    
+  </div>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
   max-height: 100vh;
+}
+
+.hundred{
+  height: 100%;
+  width: 100%;
 }
 
 .logo {
