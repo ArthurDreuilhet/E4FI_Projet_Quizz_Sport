@@ -59,12 +59,10 @@ def GetQuizInfo():
     return {"size": count, "scores": score}, 200
 
 @app.route('/login', methods=['POST'])
-def Login():
+def Login():    
     payload = request.get_json()
     
     auth_header = request.headers.get('Authorization')
-    
-    print(f"[DEBUG] Received Authorization header: {auth_header}")
 
     token = auth_header.split(" ")[1]
 
