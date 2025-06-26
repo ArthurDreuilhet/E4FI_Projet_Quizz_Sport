@@ -1,52 +1,88 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* JO Paris 2024 inspired color palette - Variables unifiées */
 :root {
-  --vt-c-white: #ffffff;
+  /* Palette de couleurs principales */
+  --quiz-pink: #f1abc9;
+  --quiz-gold: #d9c47a;
+  --quiz-blue: #2393cd;
+  --quiz-navy: #003561;
+  --quiz-white: #ffffff;
+  --quiz-purple: #420933;
+  --quiz-lavender: #AEA2D0;
+  --quiz-violet: #7456db;
+
+  /* Gradients réutilisables */
+  --gradient-primary: linear-gradient(135deg, var(--quiz-blue) 0%, var(--quiz-violet) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--quiz-gold) 0%, var(--quiz-pink) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--quiz-pink) 0%, var(--quiz-lavender) 100%);
+  --gradient-background: linear-gradient(135deg, var(--quiz-pink) 0%, var(--quiz-lavender) 50%, var(--quiz-blue) 100%);
+  --gradient-dark: linear-gradient(135deg, var(--quiz-navy) 0%, var(--quiz-purple) 100%);
+
+  /* Variables pour composants */
+  --button-primary-bg: var(--gradient-primary);
+  --button-primary-color: var(--quiz-white);
+  --button-secondary-bg: var(--gradient-secondary);
+  --button-secondary-color: var(--quiz-navy);
+  --button-accent-bg: var(--gradient-accent);
+  --button-accent-color: var(--quiz-navy);
+
+  /* Bordures et effets */
+  --border-primary: var(--quiz-blue);
+  --border-secondary: var(--quiz-pink);
+  --border-focus: var(--quiz-navy);
+
+  /* Textes */
+  --text-primary: var(--quiz-navy);
+  --text-secondary: var(--quiz-white);
+  --text-muted: rgba(0, 53, 97, 0.7);
+
+  /* Variables Vue.js adaptées */
+  --vt-c-white: var(--quiz-white);
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  --vt-c-black: var(--quiz-purple);
+  --vt-c-black-soft: var(--quiz-navy);
+  --vt-c-black-mute: var(--quiz-blue);
 
-  --vt-c-indigo: #2c3e50;
+  --vt-c-indigo: var(--quiz-navy);
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --vt-c-divider-light-1: rgba(35, 147, 205, 0.29);
+  --vt-c-divider-light-2: rgba(35, 147, 205, 0.12);
+  --vt-c-divider-dark-1: rgba(174, 162, 208, 0.65);
+  --vt-c-divider-dark-2: rgba(174, 162, 208, 0.48);
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --vt-c-text-light-1: var(--quiz-navy);
+  --vt-c-text-light-2: rgba(0, 53, 97, 0.66);
+  --vt-c-text-dark-1: var(--quiz-white);
+  --vt-c-text-dark-2: rgba(241, 171, 201, 0.84);
 }
 
 /* semantic color variables for this project */
 :root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
+  --color-background: linear-gradient(135deg, var(--quiz-white) 0%, #f8f9fa 100%);
+  --color-background-soft: var(--quiz-lavender);
+  --color-background-mute: var(--quiz-pink);
 
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
+  --color-border: var(--quiz-blue);
+  --color-border-hover: var(--quiz-navy);
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
+  --color-heading: var(--quiz-navy);
+  --color-text: var(--quiz-navy);
 
   --section-gap: 160px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+    --color-background: var(--quiz-purple);
+    --color-background-soft: var(--quiz-navy);
+    --color-background-mute: var(--quiz-violet);
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+    --color-border: var(--quiz-lavender);
+    --color-border-hover: var(--quiz-pink);
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+    --color-heading: var(--quiz-white);
+    --color-text: var(--quiz-lavender);
   }
 }
 
@@ -61,6 +97,8 @@
 body {
   cursor : url(phryge.png), auto;
   min-height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
   color: var(--color-text);
   background: var(--color-background);
   transition:
@@ -84,9 +122,119 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden; /* Empêche le scroll global */
+  position: fixed; /* Force le body à rester dans la fenêtre */
+  top: 0;
+  left: 0;
+}
+
+/* S'assurer qu'aucun élément ne déborde */
+html {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Règle pour tous les éléments pour éviter les débordements */
+* {
+  max-width: 100%;
 }
 
 button:hover,
 a:hover {
   cursor: url('phryge_2.png') 0 0, auto;
+}
+
+/* Classes CSS communes pour harmoniser le style */
+.btn {
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--button-primary-bg);
+  color: var(--button-primary-color);
+  border-color: var(--quiz-blue);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(35, 147, 205, 0.3);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-color);
+  border-color: var(--quiz-gold);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 196, 122, 0.3);
+}
+
+.btn-accent {
+  background: var(--button-accent-bg);
+  color: var(--button-accent-color);
+  border-color: var(--quiz-pink);
+}
+
+.btn-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(241, 171, 201, 0.3);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: var(--quiz-white);
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.input-field {
+  padding: 12px 16px;
+  border: 2px solid var(--border-primary);
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: var(--quiz-white);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(35, 147, 205, 0.1);
+}
+
+.card {
+  background: var(--quiz-white);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(35, 147, 205, 0.1);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
 }

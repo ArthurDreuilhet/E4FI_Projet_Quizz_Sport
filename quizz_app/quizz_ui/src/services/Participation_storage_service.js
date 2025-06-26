@@ -15,9 +15,9 @@ export default {
     return window.localStorage.getItem("token") || null;
   },
   saveParticipationScore(participationScore) {
-		// todo : implement
+		window.localStorage.setItem("playerScore", participationScore);
   },
   getParticipationScore() {
-		// todo : implement
+		return window.localStorage.getItem("playerScore") || 0;
   }
 };

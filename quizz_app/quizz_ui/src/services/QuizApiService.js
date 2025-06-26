@@ -78,7 +78,193 @@ export default {
       console.error('Error fetching question:', error);
     }
   },
-  getQuestion(position) {
-    // not implemented
+  async post_participations(playerName, playerAnswer) {
+    try {
+      const response = await fetch('http://localhost:5000/participations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "playerName": playerName,
+          "answers": playerAnswer
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Participation posted successfully:', data);
+      return { playerName: data.playerName, score: data.score };
+    } catch (error) {
+      console.error('There has been a problem with your fetch operation:', error);
+      return null;
+    }
+  },
+  async get_all_participations() {
+    try {
+      const response = await fetch('http://localhost:5000/participations', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('All participations fetched successfully:', data);
+      return data.participants;
+    } catch (error) {
+      console.error('There has been a problem with your fetch operation:', error);
+      return null;
+    }
+  },
+  
+  // Méthodes d'administration
+  async post_question(questionData, token) {
+    try {
+      const response = await fetch('http://localhost:5000/questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(questionData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error creating question:', error);
+      return null;
+    }
+  },
+
+  async update_question(questionId, questionData, token) {
+    try {
+      const response = await fetch(`http://localhost:5000/questions/${questionId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(questionData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error updating question:', error);
+      return false;
+    }
+  },
+
+  async delete_question(questionId, token) {
+    try {
+      const response = await fetch(`http://localhost:5000/questions/${questionId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting question:', error);
+      return false;
+    }
+  },
+
+  async delete_all_questions(token) {
+    try {
+      const response = await fetch('http://localhost:5000/questions/all', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting all questions:', error);
+      return false;
+    }
+  },
+
+  async delete_all_participants(token) {
+    try {
+      const response = await fetch('http://localhost:5000/participations/all', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting all participants:', error);
+      return false;
+    }
+  },
+
+  async get_question_by_position(position) {
+    try {
+      const response = await fetch(`http://localhost:5000/questions?position=${position}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching question by position:', error);
+      return null;
+    }
+  },
+
+  async rebuild_database(token) {
+    try {
+      const response = await fetch('http://localhost:5000/rebuild-db', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error rebuilding database:', error);
+      return false;
+    }
   },
 }

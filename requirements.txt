@@ -8,4 +8,5 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.2
 pycodestyle==2.13.0
+PyJWT==2.10.1
 Werkzeug==3.1.3

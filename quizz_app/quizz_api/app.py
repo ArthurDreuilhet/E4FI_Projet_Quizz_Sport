@@ -3,6 +3,7 @@ from flask_cors import CORS
 import hashlib
 import jwt_utils
 import sqlite3
+from dbinit import rebuild_database
 
 def DBConnection():
     try:
@@ -59,26 +60,42 @@ def GetQuizInfo():
     return {"size": count, "scores": score}, 200
 
 @app.route('/login', methods=['POST'])
-def Login():    
+def Login():  
+    
     payload = request.get_json()
     
     auth_header = request.headers.get('Authorization')
-
-    token = auth_header.split(" ")[1]
 
     if hashlib.md5(payload['password'].encode('utf-8')).digest() == b'^\x92\xc9\xe1!\x18U\xd2tc\xfa\xc5c\xbepe':
         jwt_token = jwt_utils.build_token()
         return {"status": "success", "message": "Login successful", "token": jwt_token}, 200
     elif auth_header :
         try:
+            token = auth_header.split(" ")[1]
             user = jwt_utils.decode_token(token)
-            print(f"[DEBUG] Authenticated user: {user}")
             return {"status": "success", "message": "Login successful", "token": token}, 200
         except jwt_utils.JwtError as e:
             return {"status": "error", "message": "Invalid credentials"}, 401
     else:
         return {"status": "error", "message": "Invalid credentials"}, 401
+
+@app.route('/rebuild-db', methods=['POST'])
+def rebuild_db_endpoint():
+    auth_header = request.headers.get('Authorization')
     
+    if not auth_header:
+        return {"status": "error", "message": "Authorization header is missing"}, 401
+
+    token = auth_header.split(" ")[1]
+
+    try:
+        user = jwt_utils.decode_token(token)
+        print(f"[DEBUG] Authenticated admin: {user}")
+    except jwt_utils.JwtError as e:
+        return {"status": "error", "message": str(e)}, 401
+
+    rebuild_database()
+    return "Ok", 200    
     
 ############################################################################    
 #    
@@ -128,10 +145,12 @@ def PostQuestion():
         id_question = cursor.lastrowid        
 
         for answer in payload['possibleAnswers']:
+            is_correct = 1 if answer['isCorrect'] else 0
             cursor.execute(
                 "INSERT INTO reponses (correct, content, id_question) VALUES (?, ?, ?)",
-                (answer['isCorrect'], answer['text'], id_question)
+                (is_correct, answer['text'], id_question)
             )
+            print(f"[DEBUG] Inserting answer: {answer['text']}, isCorrect: {is_correct}")
 
         connection.commit()
         connection.close()
@@ -157,20 +176,18 @@ def GetQuestion(question_id):
 
     cursor.execute("SELECT * FROM questions WHERE id=?", (question_id,))
     question = cursor.fetchone()
-    
-    print (f"[DEBUG] Fetching question with ID: {question}")
 
     if not question:
         return {"status": "error", "message": "Question not found"}, 404
 
-    cursor.execute("SELECT * FROM reponses WHERE id_question=?", (question_id,))
+    cursor.execute("SELECT * FROM reponses WHERE id_question=? ORDER BY id", (question_id,))
     responses = cursor.fetchall()
 
     print (f"[DEBUG] Fetching responses for question ID {question_id}: {responses}")
 
     connection.commit()
     connection.close()
-
+    
     return {
         "status": "success",
         "id": question[0],
@@ -181,7 +198,7 @@ def GetQuestion(question_id):
         "possibleAnswers": [
             {
                 "text": response[2],
-                "isCorrect": True if response[3] == 1 else False,
+                "isCorrect": True if response[1] == 1 else False,
             } for response in responses
         ],
     }, 200
@@ -200,13 +217,11 @@ def Get_question_by_position():
     cursor.execute("SELECT * FROM questions WHERE position=?", (position,))
     
     question = cursor.fetchone()
-    
-    print(f"[DEBUG] Fetching question with position {position}: {question}")
 
     if not question:
         return {"status": "error", "message": "Question not found"}, 404
 
-    cursor.execute("SELECT * FROM reponses WHERE id_question=?", (question[0],))
+    cursor.execute("SELECT * FROM reponses WHERE id_question=? ORDER BY id", (question[0],))
     responses = cursor.fetchall()
 
     connection.commit()
@@ -222,7 +237,7 @@ def Get_question_by_position():
         "possibleAnswers": [
             {
                 "text": response[2],
-                "isCorrect": True if response[3] == 1 else False,
+                "isCorrect": True if response[1] == 1 else False,
             } for response in responses
         ],
     }, 200
@@ -243,6 +258,12 @@ def Update_Question(question_id):
     try:
         user = jwt_utils.decode_token(token)
         print(f"[DEBUG] Authenticated user: {user}")
+        print(f"[DEBUG] Update payload received: {payload}")
+        print(f"[DEBUG] Question ID to update: {question_id}")
+        if 'possibleAnswers' in payload:
+            print(f"[DEBUG] Number of answers to update: {len(payload['possibleAnswers'])}")
+            for i, answer in enumerate(payload['possibleAnswers']):
+                print(f"[DEBUG] Answer {i}: text='{answer.get('text', 'N/A')}', isCorrect={answer.get('isCorrect', 'N/A')}")
     except jwt_utils.JwtError as e:
         return {"status": "error", "message": str(e)}, 401
 
@@ -260,19 +281,20 @@ def Update_Question(question_id):
     if not question:
         return {"status": "error", "message": "Question not found"}, 404
     
-    cursor.execute("SELECT * FROM questions WHERE position=?", (payload['position'],))
+    cursor.execute("SELECT * FROM questions WHERE position=? AND id!=?", (payload['position'], question_id))
     existing_question = cursor.fetchone()
     
-    if existing_question and payload['position'] < question[1]:
-        cursor.execute(
-            "UPDATE questions SET position = position + 1 WHERE position >= ? AND position < ?",
-            (payload['position'], question[1])
-        )
-    elif existing_question and payload['position'] > question[1]:
-        cursor.execute(
-            "UPDATE questions SET position = position - 1 WHERE position <= ? AND position > ?",
-            (payload['position'], question[1])
-        )
+    if existing_question and payload['position'] != question[1]:
+        if payload['position'] < question[1]:
+            cursor.execute(
+                "UPDATE questions SET position = position + 1 WHERE position >= ? AND position < ?",
+                (payload['position'], question[1])
+            )
+        elif payload['position'] > question[1]:
+            cursor.execute(
+                "UPDATE questions SET position = position - 1 WHERE position <= ? AND position > ?",
+                (payload['position'], question[1])
+            )
 
     cursor.execute(
         "UPDATE questions SET position=?, content=?, title=?, image=? WHERE id=?",
@@ -280,17 +302,25 @@ def Update_Question(question_id):
     )
 
     cursor.execute("DELETE FROM reponses WHERE id_question=?", (question_id,))
+    print(f"[DEBUG] Deleted old responses for question {question_id}")
 
-    for answer in payload['possibleAnswers']:
+    for index, answer in enumerate(payload['possibleAnswers']):
+        is_correct = 1 if answer['isCorrect'] else 0
         cursor.execute(
             "INSERT INTO reponses (correct, content, id_question) VALUES (?, ?, ?)",
-            (answer['isCorrect'], answer['text'], question_id)
+            (is_correct, answer['text'], question_id)
         )
+        print(f"[DEBUG] Inserting answer {index}: '{answer['text']}', isCorrect: {is_correct}")
+
+    # Vérifions ce qui a été inséré
+    cursor.execute("SELECT * FROM reponses WHERE id_question=? ORDER BY id", (question_id,))
+    new_responses = cursor.fetchall()
+    print(f"[DEBUG] New responses inserted: {new_responses}")
 
     connection.commit()
     connection.close()
 
-    return {"status": "success", "message": "Question updated successfully"}, 204
+    return {"status": "success", "message": "Question updated successfully"}, 200
 
 #############################################################   
 #       
@@ -378,11 +408,34 @@ def Delete_Question_by_id(question_id):
 #    
 ############################################################################ 
 
+@app.route('/participations', methods=['GET'])
+def Get_all_participants():
+    connection = DBConnection()
+    if connection is None:
+        return {"status": "error", "message": "Failed to connect to database"}, 500
+    
+    cursor = connection.cursor()
+    
+    cursor.execute("SELECT * FROM joueur ORDER BY score DESC")
+    participants = cursor.fetchall()
+    
+    participants_list = []
+    for participant in participants:
+        participants_list.append({
+            "playerName": participant[1],
+            "score": participant[2]
+        })
+    
+    connection.close()
+    
+    return {"status": "success", "participants": participants_list}, 200
+
 @app.route('/participations', methods=['POST'])
 def Post_participant():
     
     playload = request.get_json()
     
+    print(f"[DEBUG] Post_participant endpoint called with payload: {playload}")
     connection = DBConnection()
     if connection is None:
         return {"status": "error", "message": "Failed to connect to database"}, 500
@@ -400,22 +453,22 @@ def Post_participant():
         (playload['playerName'], 0)
     )
     
-    for answer_postion in range(len(playload['answers'])):
-        print(f"[DEBUG] Processing answer at position {answer_postion} : {playload['answers'][answer_postion]}")
+    for answer_position in range(len(playload['answers'])):
+        print(f"[DEBUG] Processing answer at position {answer_position} : {playload['answers'][answer_position]}")
         cursor.execute(
             "SELECT * FROM questions WHERE position=?",
-            (answer_postion + 1,)
+            (answer_position + 1,)
         )
         
         question = cursor.fetchone()
         
-        print(f"[DEBUG] Fetching question with position {answer_postion + 1} : {question[1]}")
+        print(f"[DEBUG] Fetching question with position {answer_position + 1} : {question}")
         
         if not question:
-            return {"status": "error", "message": f"Question at position {playload['answers'][answer_postion] + 1} not found"}, 404
+            return {"status": "error", "message": f"Question at position {answer_position + 1} not found"}, 404
         
         cursor.execute(
-            "SELECT * FROM reponses WHERE id_question=?",
+            "SELECT * FROM reponses WHERE id_question=? ORDER BY id",
             (question[0],)
         )
         
@@ -423,9 +476,12 @@ def Post_participant():
         print(f"[DEBUG] Fetching responses for question ID {question[0]}: {reponses}")
         
         if not reponses:
-            return {"status": "error", "message": f"No responses found for question at position {playload['answers'][answer_postion] + 1}"}, 404
+            return {"status": "error", "message": f"No responses found for question at position {answer_position + 1}"}, 404
         
-        if (reponses[playload['answers'][answer_postion] - 1][3] == 1):
+        # playload['answers'][answer_position] contient l'index de la réponse choisie (0, 1, 2, etc.)
+        selected_answer_index = playload['answers'][answer_position]
+        
+        if selected_answer_index < len(reponses) and reponses[selected_answer_index][1] == 1:
             cursor.execute(
                 "UPDATE joueur SET score = score + 1 WHERE nom=?",
                 (playload['playerName'],)
