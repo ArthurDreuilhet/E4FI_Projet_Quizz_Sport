@@ -32,7 +32,7 @@ const inc = () => {
   width: 100vw;
   background: var(--gradient-background);
   overflow: hidden;
-  position: fixed; /* Force le container à rester dans la fenêtre */
+  position: fixed;
   top: 0;
   left: 0;
 }
@@ -94,7 +94,7 @@ const inc = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden; /* Empêche le scroll dans le contenu principal */
+  overflow: hidden;
   padding: 20px 0;
   box-sizing: border-box;
 }

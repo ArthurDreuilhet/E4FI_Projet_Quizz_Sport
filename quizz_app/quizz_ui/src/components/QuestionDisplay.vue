@@ -14,7 +14,7 @@ const selectedAnswer = ref(null);
 
 watch(() => props.question, (newQuestion) => {
     console.log('Question updated:', newQuestion);
-    selectedAnswer.value = null; // Reset the selection when the question changes
+    selectedAnswer.value = null;
 });
 
 const selectAnswer = (index) => {
@@ -22,13 +22,12 @@ const selectAnswer = (index) => {
     console.log('Answer selected at index:', index);
     window.postMessage({type: 'answerSelected', data: index});
     
-    // Here you can handle the selection, e.g., store the answer
 }
 
 onMounted(() => {
-    selectedAnswer.value = null; // Reset the selection after handling
+    selectedAnswer.value = null;
     console.log('QuestionDisplay component mounted with question:', props.question);
-    // You can add any additional logic here if needed
+
 });
 
 </script>
@@ -62,37 +61,37 @@ onMounted(() => {
 .question-container {
     max-width: 800px;
     width: 100%;
-    height: 100%; /* Utilise toute la hauteur disponible du parent */
+    height: 100%;
     margin: 0 auto;
     font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
-    padding: 15px; /* Réduit le padding */
+    padding: 15px;
     box-sizing: border-box;
-    overflow: hidden; /* Empêche le débordement du container principal */
+    overflow: hidden;
 }
 
 .question-title {
     color: var(--text-primary);
-    font-size: 1.4em; /* Réduit pour économiser l'espace */
+    font-size: 1.4em;
     font-weight: bold;
-    margin-bottom: 12px; /* Réduit la marge */
+    margin-bottom: 12px;
     text-align: center;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    flex-shrink: 0; /* Empêche la compression */
+    flex-shrink: 0;
 }
 
 .question-image-container {
     text-align: center;
-    margin: 10px 0; /* Réduit les marges */
+    margin: 10px 0;
     flex-shrink: 0;
 }
 
 .question-image {
-    max-height: 150px; /* Réduit encore la hauteur maximale */
+    max-height: 150px;
     max-width: 100%;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 53, 97, 0.1);
@@ -100,10 +99,10 @@ onMounted(() => {
 }
 
 .question-text {
-    font-size: 1em; /* Réduit pour économiser l'espace */
+    font-size: 1em;
     color: var(--text-primary);
-    line-height: 1.4; /* Réduit l'espacement des lignes */
-    margin-bottom: 15px; /* Réduit la marge */
+    line-height: 1.4;
+    margin-bottom: 15px;
     text-align: center;
     font-weight: 500;
     flex-shrink: 0;
@@ -115,25 +114,25 @@ onMounted(() => {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Réduit l'espacement entre les réponses */
-    flex: 1; /* Prend l'espace disponible */
-    overflow-y: auto; /* Permet le scroll uniquement pour les réponses si nécessaire */
-    max-height: 100%; /* Limite la hauteur */
-    padding-right: 5px; /* Petite marge pour la scrollbar si elle apparaît */
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 100%;
+    padding-right: 5px;
 }
 
 .answer-item {
     margin: 0;
-    flex-shrink: 0; /* Empêche la compression des items */
+    flex-shrink: 0;
 }
 
 .answer-option {
     display: flex;
     align-items: center;
-    padding: 10px 14px; /* Réduit le padding */
+    padding: 10px 14px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(174, 162, 208, 0.1) 100%);
     border: 2px solid var(--border-primary);
-    border-radius: 10px; /* Réduit légèrement le border-radius */
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 53, 97, 0.1);
@@ -175,30 +174,30 @@ onMounted(() => {
 
 @media (max-width: 768px) {
     .question-container {
-        padding: 15px; /* Réduit sur mobile */
-        margin: 5px; /* Réduit la marge */
+        padding: 15px;
+        margin: 5px;
     }
     
     .question-title {
-        font-size: 1.3em; /* Plus petit sur mobile */
+        font-size: 1.3em;
         margin-bottom: 10px;
     }
     
     .question-text {
-        font-size: 0.95em; /* Plus petit sur mobile */
+        font-size: 0.95em;
         margin-bottom: 12px;
     }
     
     .answer-option {
-        padding: 10px 12px; /* Réduit sur mobile */
+        padding: 10px 12px;
     }
     
     .answer-label {
-        font-size: 0.95em; /* Plus petit sur mobile */
+        font-size: 0.95em;
     }
     
     .question-image {
-        max-height: 120px; /* Plus petit sur mobile */
+        max-height: 120px;
     }
 }
 

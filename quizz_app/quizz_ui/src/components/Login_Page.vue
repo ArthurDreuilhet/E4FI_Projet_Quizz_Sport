@@ -33,19 +33,9 @@ onMounted(async () => {
         <div class="login-card card">
             <h2 class="login-title">🔐 Admin Login</h2>
             <div class="form-group">
-                <input 
-                    type="password" 
-                    placeholder="Mot de passe admin" 
-                    v-model="password"
-                    @keyup.enter="submitPassword"
-                    class="password-input input-field"
-                />
+                <input type="password" placeholder="Mot de passe admin" v-model="password" @keyup.enter="submitPassword" class="password-input input-field" />
             </div>
-            <button 
-                type="submit" 
-                @click="submitPassword"
-                class="submit-button btn btn-secondary"
-            >
+            <button type="submit" @click="submitPassword" class="submit-button btn btn-secondary">
                 Se connecter
             </button>
         </div>

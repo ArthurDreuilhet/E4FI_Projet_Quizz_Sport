@@ -6,29 +6,26 @@ import quizApiService from '@/services/QuizApiService'
 const router = useRouter()
 const quizInfo = ref(null)
 const participants = ref([])
-const maxVisibleParticipants = ref(4) // Par défaut 4, sera calculé dynamiquement
+const maxVisibleParticipants = ref(4)
 
 const startQuiz = () => {
   router.push('/start')
 }
 
-// Calculer le nombre maximum de participants affichables
 const calculateMaxVisibleParticipants = () => {
   const windowHeight = window.innerHeight
-  const headerHeight = 200 // Header + stats
-  const startSectionHeight = 120 // Bouton Start
-  const leaderboardHeaderHeight = 80 // Titre "Tableau des Scores"
-  const padding = 100 // Marges et paddings généraux
-  const participantCardHeight = 90 // Hauteur approximative d'une carte participant
+  const headerHeight = 200
+  const startSectionHeight = 120
+  const leaderboardHeaderHeight = 80
+  const padding = 100
+  const participantCardHeight = 90
   
   const availableHeight = windowHeight - headerHeight - startSectionHeight - leaderboardHeaderHeight - padding
   const maxItems = Math.floor(availableHeight / participantCardHeight)
   
-  // Minimum 2, maximum 8
   maxVisibleParticipants.value = Math.max(2, Math.min(maxItems, 8))
 }
 
-// Liste des participants à afficher (limitée)
 const displayedParticipants = computed(() => {
   return participants.value.slice(0, maxVisibleParticipants.value)
 })
@@ -45,14 +42,12 @@ onMounted(async () => {
     console.warn('Échec du chargement des informations du quiz')
   }
   
-  // Recalculer si la fenêtre est redimensionnée
   window.addEventListener('resize', calculateMaxVisibleParticipants)
 })
 </script>
 
 <template>
   <div class="homepage-container">
-    <!-- Header du quiz -->
     <div class="quiz-header">
       <h1>🏆 Quiz Sport</h1>
       <p class="quiz-description">Testez vos connaissances sportives !</p>
@@ -62,14 +57,12 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Bouton Start -->
     <div class="start-section">
       <button @click="startQuiz" class="start-btn">
         🚀 Commencer le Quiz
       </button>
     </div>
 
-    <!-- Tableau des scores -->
     <div class="leaderboard-section" v-if="participants.length > 0">
       <h2>🎯 Tableau des Scores</h2>
       <div class="participants-grid">
@@ -90,13 +83,11 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <!-- Indicateur s'il y a plus de participants -->
       <div v-if="participants.length > maxVisibleParticipants" class="more-participants">
         ... et {{ participants.length - maxVisibleParticipants }} autres participants
       </div>
     </div>
 
-    <!-- Message si aucun participant -->
     <div v-else class="no-participants">
       <p>🎯 Soyez le premier à jouer !</p>
     </div>
@@ -116,7 +107,6 @@ onMounted(async () => {
   background: transparent;
 }
 
-/* Header du quiz */
 .quiz-header {
   text-align: center;
   margin-bottom: 40px;
@@ -169,7 +159,6 @@ onMounted(async () => {
   box-shadow: 0 4px 15px rgba(241, 171, 201, 0.3) !important;
 }
 
-/* Section Start */
 .start-section {
   text-align: center;
   margin-bottom: 50px;
@@ -199,7 +188,6 @@ onMounted(async () => {
   transform: translateY(-1px);
 }
 
-/* Tableau des scores */
 .leaderboard-section {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
@@ -294,7 +282,6 @@ onMounted(async () => {
   font-weight: 600;
 }
 
-/* Message aucun participant */
 .no-participants {
   text-align: center;
   background: rgba(255, 255, 255, 0.9);
@@ -306,7 +293,6 @@ onMounted(async () => {
   border: 1px solid rgba(35, 147, 205, 0.2);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .quiz-header h1 {
     font-size: 2.5em;

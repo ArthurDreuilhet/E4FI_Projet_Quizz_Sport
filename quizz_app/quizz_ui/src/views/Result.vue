@@ -2,7 +2,6 @@
     <div class="result-container">
         <h1>Résultats du Quiz</h1>
         
-        <!-- Section du joueur actuel -->
         <div class="current-player-section" v-if="currentPlayer">
             <h2>Votre Score</h2>
             <div class="current-player-card">
@@ -10,7 +9,6 @@
                 <span class="player-score">{{ currentPlayer.score }} points ⭐</span>
             </div>
         </div>
-          <!-- Classement général -->
         <div class="ranking-section">
             <h2>Classement Général</h2>
             <div v-if="displayedParticipants.length > 0" class="participants-list">
@@ -23,7 +21,6 @@
                     <span class="name">{{ participant.playerName }}</span>
                     <span class="score">{{ participant.score }} points</span>
                 </div>
-                <!-- Indicateur s'il y a plus de participants -->
                 <div v-if="allParticipants.length > maxVisibleParticipants" class="more-participants">
                     ... et {{ allParticipants.length - maxVisibleParticipants }} autres participants
                 </div>
@@ -33,7 +30,6 @@
             </div>
         </div>
         
-        <!-- Actions -->
         <div class="actions">
             <button @click="goHome" class="home-btn">Accueil</button>
         </div>
@@ -49,29 +45,26 @@ import ParticipationStorageService from '@/services/Participation_storage_servic
 const router = useRouter();
 const allParticipants = ref([]);
 const currentPlayer = ref(null);
-const maxVisibleParticipants = ref(5); // Par défaut 5, sera calculé dynamiquement
+const maxVisibleParticipants = ref(5);
 
 const isCurrentPlayer = (participant) => {
     return currentPlayer.value && participant.playerName === currentPlayer.value.playerName;
 };
 
-// Calculer le nombre maximum de participants affichables
 const calculateMaxVisibleParticipants = () => {
     const windowHeight = window.innerHeight;
-    const headerHeight = 150; // Approximation pour le header
-    const currentPlayerHeight = 120; // Approximation pour la section joueur actuel
-    const actionsHeight = 80; // Approximation pour les boutons
-    const sectionPadding = 100; // Marges et paddings
-    const participantItemHeight = 65; // Hauteur approximative d'un item participant
+    const headerHeight = 150;
+    const currentPlayerHeight = 120;
+    const actionsHeight = 80;
+    const sectionPadding = 100;
+    const participantItemHeight = 65;
     
     const availableHeight = windowHeight - headerHeight - currentPlayerHeight - actionsHeight - sectionPadding;
     const maxItems = Math.floor(availableHeight / participantItemHeight);
     
-    // Minimum 3, maximum 10
     maxVisibleParticipants.value = Math.max(3, Math.min(maxItems, 10));
 };
 
-// Liste des participants à afficher (limitée)
 const displayedParticipants = computed(() => {
     return allParticipants.value.slice(0, maxVisibleParticipants.value);
 });
@@ -82,7 +75,6 @@ const loadParticipants = async () => {
         if (participants) {
             allParticipants.value = participants;
             
-            // Récupérer le joueur actuel depuis le storage
             const currentPlayerName = ParticipationStorageService.getPlayerName();
             const currentPlayerScore = ParticipationStorageService.getParticipationScore();
             
@@ -106,7 +98,6 @@ onMounted(() => {
     calculateMaxVisibleParticipants();
     loadParticipants();
     
-    // Recalculer si la fenêtre est redimensionnée
     window.addEventListener('resize', calculateMaxVisibleParticipants);
 });
 </script>
@@ -137,7 +128,6 @@ h2 {
     font-weight: 600;
 }
 
-/* Section du joueur actuel */
 .current-player-section {
     background: linear-gradient(135deg, #2393cd 0%, #7456db 100%);
     border-radius: 15px;
@@ -246,7 +236,6 @@ h2 {
     border: 1px solid rgba(116, 86, 219, 0.2);
 }
 
-/* Actions */
 .actions {
     display: flex;
     justify-content: center;

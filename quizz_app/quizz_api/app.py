@@ -66,7 +66,7 @@ def Login():
     
     auth_header = request.headers.get('Authorization')
 
-    if hashlib.md5(payload['password'].encode('utf-8')).digest() == b'^\x92\xc9\xe1!\x18U\xd2tc\xfa\xc5c\xbepe':
+    if hashlib.md5(payload['password'].encode('utf-8')).digest() == b'\xd2x\x07{\xbf\xe7(Z\x14MK[\x11\xad\xb9\xcf':
         jwt_token = jwt_utils.build_token()
         return {"status": "success", "message": "Login successful", "token": jwt_token}, 200
     elif auth_header :

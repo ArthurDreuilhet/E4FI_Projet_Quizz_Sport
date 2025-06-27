@@ -8,10 +8,7 @@ def rebuild_database():
     cursor.execute("DROP TABLE IF EXISTS reponses")
     cursor.execute("DROP TABLE IF EXISTS questions")
     cursor.execute("DROP TABLE IF EXISTS joueur")
-    
-    cursor.execute("DELETE FROM sqlite_sequence WHERE name='questions'")
-    cursor.execute("DELETE FROM sqlite_sequence WHERE name='reponses'")
-    cursor.execute("DELETE FROM sqlite_sequence WHERE name='joueur'")
+
 
     # Re-create tables
     cursor.execute("""

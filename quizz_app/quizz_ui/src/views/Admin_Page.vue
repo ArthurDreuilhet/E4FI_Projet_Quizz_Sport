@@ -37,7 +37,7 @@ const loadQuestions = async () => {
     try {
         const response = await QuizApiService.getInfos();
         if (response) {
-            // Charger toutes les questions individuellement
+            // Charger questions
             questions.value = [];
             for (let i = 1; i <= response.size; i++) {
                 const question = await QuizApiService.get_question_by_position(i);
@@ -195,27 +195,23 @@ const deleteAllParticipants = async () => {
 const seedDatabase = async () => {
     if (confirm('Êtes-vous sûr de vouloir reconstruire la base de données et ajouter les questions JO ? Cela supprimera toutes les données existantes !')) {
         try {
-            // 1. Reconstruire la base de données (créer les tables)
             showMessage('Reconstruction de la base de données...', 'info');
             const rebuildResult = await QuizApiService.rebuild_database(token.value);
             if (!rebuildResult) {
                 throw new Error('Échec de la reconstruction de la base de données');
             }
             
-            // 2. Charger le fichier JSON des questions JO
             const response = await fetch('/jo_questions.json');
             if (!response.ok) {
                 throw new Error('Impossible de charger le fichier des questions');
             }
             const predefinedQuestions = await response.json();
 
-            // 3. Ajouter les questions une par une
             let successCount = 0;
-            let currentPosition = 1; // Commencer à 1 car base vide
+            let currentPosition = 1;
 
             for (const questionData of predefinedQuestions) {
                 try {
-                    // Ajouter la position à chaque question
                     const questionWithPosition = {
                         ...questionData,
                         position: currentPosition
@@ -233,7 +229,7 @@ const seedDatabase = async () => {
 
             showMessage(`Base de données reconstruite et ${successCount} questions ajoutées avec succès !`, 'success');
             await loadQuestions();
-            await loadParticipants(); // Recharger aussi les participants (liste vide)
+            await loadParticipants();
         } catch (error) {
             showMessage('Erreur lors de la reconstruction et de l\'ajout des questions: ' + error.message, 'error');
         }
@@ -275,7 +271,6 @@ onMounted(async () => {
 
 <template>
     <div class="admin-container">
-        <!-- Header -->
         <div class="admin-header">
             <h1>🔧 Administration Quiz</h1>
             <div class="header-actions">
@@ -283,12 +278,10 @@ onMounted(async () => {
             </div>
         </div>
 
-        <!-- Message de notification -->
         <div v-if="message" :class="['message', messageType]">
             {{ message }}
         </div>
 
-        <!-- Navigation -->
         <div class="admin-nav">
             <button 
                 @click="currentView = 'dashboard'" 
@@ -304,9 +297,7 @@ onMounted(async () => {
             </button>
         </div>
 
-        <!-- Vue Tableau de bord -->
         <div v-if="currentView === 'dashboard'" class="dashboard">
-            <!-- Statistiques -->
             <div class="stats-section">
                 <div class="stat-card">
                     <h3>📝 Questions</h3>
@@ -318,7 +309,6 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <!-- Actions rapides -->
             <div class="quick-actions">
                 <h3>⚡ Actions rapides</h3>
                 <div class="action-buttons">
@@ -334,7 +324,6 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <!-- Liste des questions -->
             <div class="questions-section">
                 <h3>📋 Gestion des questions</h3>
                 <div v-if="questions.length === 0" class="no-questions">
@@ -365,7 +354,6 @@ onMounted(async () => {
             </div>
         </div>
 
-        <!-- Vue Création/Édition -->
         <div v-if="currentView === 'create' || currentView === 'edit'" class="form-section">
             <h2>{{ currentView === 'create' ? '➕ Créer une question' : '✏️ Modifier la question' }}</h2>
             
@@ -454,7 +442,6 @@ onMounted(async () => {
     flex-direction: column;
 }
 
-/* Header */
 .admin-header {
     display: flex;
     justify-content: space-between;

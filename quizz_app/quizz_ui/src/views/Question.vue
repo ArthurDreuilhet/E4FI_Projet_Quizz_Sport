@@ -20,12 +20,12 @@ const page_suivante = async () => {
     console.log('Proceeding to next question:', question.value[num_questions.value]);
     if (quizzAnswers.value === undefined) {
         alert('Please select an answer before proceeding to the next question.');
-        return; // Prevent proceeding without an answer
+        return;
     }
     score.value.push(quizzAnswers.value);
     console.log('Incorrect answer selected, score remains:', score.value);
     
-    quizzAnswers.value = undefined; // Reset the answer selection for the next question
+    quizzAnswers.value = undefined;
     if (num_questions.value < quiz_infos.value.size - 1) {
         num_questions.value++;
     } else {
@@ -42,7 +42,7 @@ const page_suivante = async () => {
 
 const get_Question = async () => {
     console.log('Fetching questions...');
-    question.value = []; // Reset array
+    question.value = [];
     
     if (!quiz_infos.value.size) {
         console.error('No quiz size found');
@@ -81,7 +81,6 @@ onMounted(async () => {
     console.log('Player name:', playerName.value);
     
     try {
-        // Utilisation de l'API réelle pour récupérer les questions
         console.log('Fetching real quiz data from API...');
         quiz_infos.value = await QuizApiService.getInfos();
         console.log('Quiz infos fetched:', quiz_infos.value);
@@ -111,7 +110,6 @@ onUnmounted(() => {
             <div class="progress-bar" v-if="quiz_infos.size > 0">
                 <div class="progress-fill" :style="{ width: ((num_questions + 1) / quiz_infos.size) * 100 + '%' }"></div>
             </div>
-            <!-- Debug info (à supprimer en production) -->
             <div class="debug-info" v-if="false">
                 <p style="font-size: 0.8em; color: #666;">
                     Debug: Questions loaded: {{ question.length }}, Quiz size: {{ quiz_infos.size }}, Current: {{ num_questions }}
@@ -147,26 +145,26 @@ onUnmounted(() => {
     width: 100%;
     margin: 0 auto;
     padding: 20px;
-    height: calc(90vh - 40px); /* Utilise la hauteur disponible moins les paddings */
+    height: calc(90vh - 40px);
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Réduit l'espacement pour optimiser l'espace */
+    gap: 20px;
     background: transparent;
-    overflow: hidden; /* Empêche le scroll global du container */
+    overflow: hidden;
     box-sizing: border-box;
 }
 
 .question-header {
     text-align: center;
-    margin-bottom: 10px; /* Réduit la marge */
-    flex-shrink: 0; /* Empêche la compression */
+    margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
 .page-title {
     color: #003561;
-    font-size: 2em; /* Légèrement réduit pour économiser l'espace */
+    font-size: 2em;
     font-weight: bold;
-    margin-bottom: 15px; /* Réduit la marge */
+    margin-bottom: 15px;
     background: linear-gradient(135deg, #2393cd 0%, #7456db 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -190,13 +188,13 @@ onUnmounted(() => {
 }
 
 .question-content {
-    flex: 1; /* Prend tout l'espace disponible */
+    flex: 1;
     display: flex;
     justify-content: center;
-    align-items: stretch; /* Permet au contenu d'utiliser toute la hauteur */
-    padding: 10px 0; /* Réduit le padding */
-    overflow: hidden; /* Empêche le débordement */
-    min-height: 0; /* Permet la réduction si nécessaire */
+    align-items: stretch;
+    padding: 10px 0;
+    overflow: hidden;
+    min-height: 0;
 }
 
 .question-loading,
@@ -233,12 +231,12 @@ onUnmounted(() => {
 
 .question-navigation {
     text-align: center;
-    padding: 15px; /* Réduit le padding */
+    padding: 15px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 53, 97, 0.1);
     border: 1px solid rgba(35, 147, 205, 0.2);
-    flex-shrink: 0; /* Empêche la compression */
+    flex-shrink: 0;
 }
 
 .next-question-btn {
@@ -284,12 +282,12 @@ onUnmounted(() => {
 @media (max-width: 768px) {
     .question-page-container {
         padding: 15px;
-        gap: 15px; /* Réduit l'espacement sur mobile */
-        height: calc(90vh - 30px); /* Ajuste pour le padding réduit */
+        gap: 15px;
+        height: calc(90vh - 30px);
     }
     
     .page-title {
-        font-size: 1.6em; /* Plus petit sur mobile */
+        font-size: 1.6em;
         margin-bottom: 10px;
     }
     
@@ -304,7 +302,7 @@ onUnmounted(() => {
     }
     
     .question-navigation {
-        padding: 12px; /* Réduit sur mobile */
+        padding: 12px;
     }
 }
 
