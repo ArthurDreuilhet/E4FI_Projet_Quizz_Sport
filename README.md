@@ -61,7 +61,7 @@ Ce projet est une application web de quiz sportif. Elle permet à tout visiteur 
 
 La base de données SQLite comporte trois tables principales :
 
-![schema_bdd](schema_bdd.png)
+![schema_bdd](Schema_bdd.png)
 
 - **questions** :
   - `id` (INTEGER, PK, auto-incrémenté)
